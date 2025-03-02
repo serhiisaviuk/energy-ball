@@ -32,26 +32,34 @@ class Player {
         this.lastDashTime = 0;
         this.dashDirection = { x: 0, y: 0 }; // Direction of the dash
         
+        // Add a keys object for tracking key states
+        this.keys = {
+            w: false,
+            a: false,
+            s: false,
+            d: false,
+            space: false
+        };
+        
         this.setupInputHandlers();
     }
     
     setupInputHandlers() {
-        document.addEventListener('keydown', (e) => {
-            switch (e.key.toLowerCase()) {
-                case 'w': this.moveUp = true; break;
-                case 's': this.moveDown = true; break;
-                case 'a': this.moveLeft = true; break;
-                case 'd': this.moveRight = true; break;
-                case ' ': this.dash(); break; // Space now triggers dash
+        // Global key tracking
+        window.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            // Update our keys object
+            if (key in this.keys) {
+                this.keys[key] = true;
+                console.log("Key down:", key, this.keys);
             }
         });
         
-        document.addEventListener('keyup', (e) => {
-            switch (e.key.toLowerCase()) {
-                case 'w': this.moveUp = false; break;
-                case 's': this.moveDown = false; break;
-                case 'a': this.moveLeft = false; break;
-                case 'd': this.moveRight = false; break;
+        window.addEventListener('keyup', (e) => {
+            const key = e.key.toLowerCase();
+            if (key in this.keys) {
+                this.keys[key] = false;
+                console.log("Key up:", key, this.keys);
             }
         });
         
@@ -83,6 +91,26 @@ class Player {
     }
     
     update() {
+        // Update movement flags based on keys
+        this.moveUp = this.keys.w;
+        this.moveDown = this.keys.s;
+        this.moveLeft = this.keys.a;
+        this.moveRight = this.keys.d;
+        
+        // Try to dash if space is pressed and wasn't pressed last frame
+        if (this.keys.space && !this.wasSpacePressed) {
+            this.dash();
+        }
+        this.wasSpacePressed = this.keys.space;
+        
+        // Debug movement state
+        console.log("Movement state:", { 
+            up: this.moveUp, 
+            down: this.moveDown, 
+            left: this.moveLeft, 
+            right: this.moveRight
+        });
+        
         let dx = 0;
         let dy = 0;
         

@@ -203,8 +203,15 @@ class Game {
     update(deltaTime) {
         if (this.state !== 'playing') return;
         
+        console.log("Game update cycle");
+        
         // Update player
-        this.player.update();
+        if (this.player) {
+            console.log("Calling player.update()");
+            this.player.update();
+        } else {
+            console.log("Player object doesn't exist!");
+        }
         
         // Keep player within boundaries
         this.player.x = Math.min(Math.max(0, this.player.x), this.canvas.width - this.player.width);
@@ -519,4 +526,4 @@ class Game {
 // Initialize game when page is loaded
 window.addEventListener('load', () => {
     new Game();
-}); 
+});
