@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Ball Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="main-menu" class="screen">
+            <h1>Energy Ball</h1>
+            <div class="settings">
+                <div class="setting">
+                    <label for="game-mode">Game Mode:</label>
+                    <select id="game-mode">
+                        <option value="hunt">Hunt Mode</option>
+                        <option value="capture">Flag Capture</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label for="villain-count">Number of Villains:</label>
+                    <input type="range" id="villain-count" min="1" max="10" value="3">
+                    <span id="villain-count-value">3</span>
+                </div>
+                <div class="setting">
+                    <label for="sound-volume">Sound Volume:</label>
+                    <input type="range" id="sound-volume" min="0" max="100" value="50">
+                    <span id="sound-volume-value">50%</span>
+                </div>
+                <div class="setting">
+                    <label for="villain-firing">Villain Firing:</label>
+                    <input type="checkbox" id="villain-firing">
+                    <span>Off</span>
+                </div>
+            </div>
+            <button id="start-game">Start Game</button>
+        </div>
+        
+        <div id="game-screen" class="screen hidden">
+            <canvas id="game-canvas"></canvas>
+        </div>
+        
+        <div id="game-over" class="screen hidden">
+            <h2 id="game-result"></h2>
+            <button id="restart-game">Play Again</button>
+            <button id="back-to-menu">Back to Menu</button>
+        </div>
+    </div>
+
+    <script src="js/soundManager.js"></script>
+    <script src="js/maze.js"></script>
+    <script src="js/energyBall.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/villain.js"></script>
+    <script src="js/flag.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html> 

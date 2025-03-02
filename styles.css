@@ -1,0 +1,126 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #111;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    cursor: default;
+}
+
+#game-container {
+    width: 100%;
+    max-width: 800px;
+    height: 600px;
+    position: relative;
+    background-color: #222;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    overflow: hidden;
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s;
+}
+
+.hidden {
+    display: none;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    color: #0ff;
+    text-shadow: 0 0 10px #0ff;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #0ff;
+    text-shadow: 0 0 10px #0ff;
+}
+
+.settings {
+    margin-bottom: 2rem;
+    width: 80%;
+}
+
+.setting {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+label {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+input[type="range"] {
+    width: 50%;
+}
+
+button {
+    background-color: #0ff;
+    border: none;
+    color: #111;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 0.5rem;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background-color: #00cccc;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #0ff;
+}
+
+#game-canvas {
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    cursor: crosshair;
+}
+
+/* Add aiming cursor for when mouse is over the canvas */
+#game-canvas:hover {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="8" fill="%2300FFFF" fill-opacity="0.7"/><circle cx="16" cy="16" r="4" fill="%23FFFFFF" fill-opacity="0.9"/><circle cx="16" cy="16" r="14" stroke="%2300CCFF" stroke-width="1" fill="none" stroke-opacity="0.5"/><line x1="16" y1="2" x2="16" y2="6" stroke="%2300FFFF" stroke-width="2"/><line x1="16" y1="26" x2="16" y2="30" stroke="%2300FFFF" stroke-width="2"/><line x1="2" y1="16" x2="6" y2="16" stroke="%2300FFFF" stroke-width="2"/><line x1="26" y1="16" x2="30" y2="16" stroke="%2300FFFF" stroke-width="2"/></svg>') 16 16, crosshair;
+}
+
+/* Cursor for the firing button */
+#start-game, #restart-game, #back-to-menu {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="%23FFA500" fill-opacity="0.7"/><circle cx="12" cy="12" r="4" fill="%23FFCC00" fill-opacity="0.9"/><circle cx="12" cy="12" r="10" stroke="%23FF4500" stroke-width="2" fill="none" stroke-opacity="0.5"/></svg>') 12 12, pointer;
+}
+
+#cursor-helper {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,255,255,0.7) 0%, rgba(0,255,255,0) 70%);
+    border: 1px solid rgba(0,255,255,0.5);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    display: none;
+} 
