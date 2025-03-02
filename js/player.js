@@ -32,13 +32,13 @@ class Player {
         this.lastDashTime = 0;
         this.dashDirection = { x: 0, y: 0 }; // Direction of the dash
         
-        // Add a keys object for tracking key states
+        // Add a keys object for tracking key states with correct space key representation
         this.keys = {
             w: false,
             a: false,
             s: false,
             d: false,
-            space: false
+            ' ': false  // Use actual space character instead of "space"
         };
         
         this.setupInputHandlers();
@@ -49,17 +49,15 @@ class Player {
         window.addEventListener('keydown', (e) => {
             const key = e.key.toLowerCase();
             // Update our keys object
-            if (key in this.keys) {
+            if (key in this.keys || key === ' ') {  // Explicitly check for space
                 this.keys[key] = true;
-                console.log("Key down:", key, this.keys);
             }
         });
         
         window.addEventListener('keyup', (e) => {
             const key = e.key.toLowerCase();
-            if (key in this.keys) {
+            if (key in this.keys || key === ' ') {  // Explicitly check for space
                 this.keys[key] = false;
-                console.log("Key up:", key, this.keys);
             }
         });
         
@@ -91,25 +89,27 @@ class Player {
     }
     
     update() {
-        // Update movement flags based on keys
-        this.moveUp = this.keys.w;
-        this.moveDown = this.keys.s;
-        this.moveLeft = this.keys.a;
-        this.moveRight = this.keys.d;
+        // Update movement flags based on keys - Using bracket notation instead of dot notation
+        this.moveUp = this.keys["w"];
+        this.moveDown = this.keys["s"];
+        this.moveLeft = this.keys["a"];
+        this.moveRight = this.keys["d"];
         
         // Try to dash if space is pressed and wasn't pressed last frame
-        if (this.keys.space && !this.wasSpacePressed) {
+        if (this.keys[' '] && !this.wasSpacePressed) {
             this.dash();
         }
-        this.wasSpacePressed = this.keys.space;
+        this.wasSpacePressed = this.keys[' '];
         
-        // Debug movement state
-        console.log("Movement state:", { 
-            up: this.moveUp, 
-            down: this.moveDown, 
-            left: this.moveLeft, 
-            right: this.moveRight
-        });
+        // Add minimal debug to see if keys are working
+        if (this.keys["w"] || this.keys["a"] || this.keys["s"] || this.keys["d"] || this.keys[' ']) {
+            console.log("Keys pressed:", 
+                this.keys["w"] ? "W " : "", 
+                this.keys["a"] ? "A " : "", 
+                this.keys["s"] ? "S " : "", 
+                this.keys["d"] ? "D " : "",
+                this.keys[' '] ? "SPACE" : "");
+        }
         
         let dx = 0;
         let dy = 0;
@@ -134,22 +134,63 @@ class Player {
             }
         }
         
-        // Debug movement - add this to check if keys are being registered
-        if (dx !== 0 || dy !== 0) {
-            console.log(`Moving: dx=${dx}, dy=${dy}`);
-        }
-        
-        // Simplify collision detection temporarily to get movement working
+        // Calculate next position with movement
         const nextX = this.x + dx;
         const nextY = this.y + dy;
         
-        // Basic boundary check
-        if (nextX >= 0 && nextX + this.width <= this.maze.width * this.maze.cellSize) {
-            this.x = nextX;
-        }
-        
-        if (nextY >= 0 && nextY + this.height <= this.maze.height * this.maze.cellSize) {
-            this.y = nextY;
+        // Restore terrain collision detection
+        try {
+            // Terrain check for X movement
+            const centerX = nextX + this.width / 2;
+            const centerY = this.y + this.height / 2;
+            
+            // Check if we can move in X direction
+            const cellX = this.maze.getCellTypeAt(centerX, centerY);
+            const canMoveX = cellX && 
+                             cellX.terrain !== this.maze.TERRAIN_WATER && 
+                             cellX.terrain !== this.maze.TERRAIN_MOUNTAIN;
+            
+            // Apply X movement if allowed
+            if (canMoveX) {
+                // Apply forest slowdown if applicable
+                if (cellX.terrain === this.maze.TERRAIN_FOREST && !this.isDashing) {
+                    this.x += dx * 0.7; // 30% slower in forest
+                } else {
+                    this.x += dx;
+                }
+            }
+            
+            // Terrain check for Y movement
+            const centerX2 = this.x + this.width / 2;
+            const centerY2 = nextY + this.height / 2;
+            
+            // Check if we can move in Y direction
+            const cellY = this.maze.getCellTypeAt(centerX2, centerY2);
+            const canMoveY = cellY && 
+                             cellY.terrain !== this.maze.TERRAIN_WATER && 
+                             cellY.terrain !== this.maze.TERRAIN_MOUNTAIN;
+            
+            // Apply Y movement if allowed
+            if (canMoveY) {
+                // Apply forest slowdown if applicable
+                if (cellY.terrain === this.maze.TERRAIN_FOREST && !this.isDashing) {
+                    this.y += dy * 0.7; // 30% slower in forest
+                } else {
+                    this.y += dy;
+                }
+            }
+        } catch (e) {
+            // Fallback to basic boundary check if terrain check fails
+            console.error("Terrain check failed:", e);
+            
+            // Basic boundary check
+            if (nextX >= 0 && nextX + this.width <= this.maze.width * this.maze.cellSize) {
+                this.x = nextX;
+            }
+            
+            if (nextY >= 0 && nextY + this.height <= this.maze.height * this.maze.cellSize) {
+                this.y = nextY;
+            }
         }
         
         // Update energy balls

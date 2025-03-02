@@ -203,14 +203,9 @@ class Game {
     update(deltaTime) {
         if (this.state !== 'playing') return;
         
-        console.log("Game update cycle");
-        
         // Update player
         if (this.player) {
-            console.log("Calling player.update()");
             this.player.update();
-        } else {
-            console.log("Player object doesn't exist!");
         }
         
         // Keep player within boundaries
